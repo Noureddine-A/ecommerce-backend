@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Role;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,9 @@ class UserController extends Controller
             'password' => 'required'
         ]);
 
-        $newUser->save();
+        $role = Role::where('name', "user")->first();
+
+        $role->users()->save($newUser);
 
         if (Auth::attempt($validation)) {
             $request->session()->regenerate();
@@ -43,16 +46,18 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            $isAdmin = false;
+
             $user = new User();
             $userLoggingIn = $user->findUser(($request->get("email")));
 
-            foreach($userLoggingIn->roles as $role) {
-                if($role->name == "admin") {
+            foreach ($userLoggingIn->roles as $role) {
+                if ($role->name == "admin") {
                     $isAdmin = true;
                 }
             }
 
-            return response()->json(["message" => "Successfully logged in", "admin"=>$isAdmin], 200);
+            return response()->json(["message" => "Successfully logged in", "admin" => $isAdmin], 200);
         }
 
         return response()->json(["password" => ["Authentication failed. Check your login credentials."]], 419);
