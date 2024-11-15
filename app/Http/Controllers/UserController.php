@@ -31,7 +31,7 @@ class UserController extends Controller
 
         if (Auth::attempt($validation)) {
             $request->session()->regenerate();
-            return response()->json(["message" => "User has been successfully created."], 200);
+            return response()->json(["message" => "User has been successfully created.", "admin" => false], 200);
         }
 
     }
@@ -60,7 +60,7 @@ class UserController extends Controller
             return response()->json(["message" => "Successfully logged in", "admin" => $isAdmin], 200);
         }
 
-        return response()->json(["password" => ["Authentication failed. Check your login credentials."]], 419);
+        return response()->json(["errors" => ["password" => ["Password and username don't match."]]], 419);
     }
 
     public function logout(Request $request)
