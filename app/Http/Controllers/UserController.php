@@ -46,18 +46,9 @@ class UserController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            $isAdmin = false;
+            $user = Auth::user();
 
-            $user = new User();
-            $userLoggingIn = $user->findUser(($request->get("email")));
-
-            foreach ($userLoggingIn->roles as $role) {
-                if ($role->name == "admin") {
-                    $isAdmin = true;
-                }
-            }
-
-            return response()->json(["message" => "Successfully logged in", "admin" => $isAdmin], 200);
+            return response()->json(["message" => "Successfully logged in", "admin" => $user->isAdmin()], 200);
         }
 
         return response()->json(["errors" => ["password" => ["Password and username don't match."]]], 419);

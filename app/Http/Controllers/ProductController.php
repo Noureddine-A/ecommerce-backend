@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function addProduct(Request $request) {
-
-       
+    public function create(Request $request) {
+        $photos = $request->get("images");
+        $name = $request->get("name");
+        $price = $request->get("price");
     }
 }
