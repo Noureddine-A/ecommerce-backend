@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Photo extends Model
 {
-    public function product() {
+
+    protected $fillable = ["photo_path"];
+
+    public function product()
+    {
         return $this->belongsTo(Product::class);
     }
 }

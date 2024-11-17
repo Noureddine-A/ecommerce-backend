@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    protected $fillable = ["name", "price", "description", "category_id", "subCategoryName"];
+
     public function category()
     {
         return $this->hasOne(Category::class);
