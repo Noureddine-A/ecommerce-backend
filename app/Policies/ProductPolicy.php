@@ -8,6 +8,15 @@ use Illuminate\Auth\Access\Response;
 
 class ProductPolicy
 {
+    public function before(User $user, string $ability)
+    {
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        return false;
+    }
+    
     /**
      * Determine whether the user can view any models.
      */
@@ -29,11 +38,7 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        return false;
+        return $user->isAdmin();
     }
 
     /**

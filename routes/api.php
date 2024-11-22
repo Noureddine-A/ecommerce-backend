@@ -6,7 +6,7 @@ use App\Http\Controllers\UserController;
 
 // User routes
 
-Route::post('/user/signup', [UserController::class, "registerUser"]);
+Route::post('/user/signup', [UserController::class, "signup"]);
 
 Route::post("/user/login", [UserController::class, "login"]);
 

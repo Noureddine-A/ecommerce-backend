@@ -7,10 +7,11 @@ use App\Models\Role;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Classes\UserResponse;
 
 class UserController extends Controller
 {
-    public function registerUser(Request $request)
+    public function signup(Request $request)
     {
 
         $name = $request->get("name");
@@ -31,7 +32,9 @@ class UserController extends Controller
 
         if (Auth::attempt($validation)) {
             $request->session()->regenerate();
-            return response()->json(["message" => "User has been successfully created.", "admin" => false], 200);
+
+            $response = new UserResponse("User has been successfully created.", false);
+            return response()->json(["message"=>$response->getResponseMessage()], 200);
         }
 
     }
