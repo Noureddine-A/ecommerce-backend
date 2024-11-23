@@ -23,17 +23,24 @@ class ProductController extends Controller
             $sizes = $request->get('sizes');
             $photos = $request->all("images");
 
-            $request->validate([
+            Validator::make($request->all(), [
                 "name" => ["required", "string", "unique:products"],
                 "price" => ["required", "numeric"],
                 "description" => ["required", "string"],
                 "category" => ["required", "numeric"],
                 "subCategory" => ["required"],
                 "sizes" => ["required"]
-            ]);
+            ], $messages = [
+                    "name" => "Name is required.",
+                    "price" => "Price is required.",
+                    "description" => "Description is required.",
+                    "category" => "Category is required.",
+                    "Subcategory" => "Subcategory is required.",
+                    "sizes" => "Size is required.",
+                ])->validate();
 
             //Check from the b64 string whether the string starts with the characters that indicate that the uploaded file is a JPG or PNG
-            Validator::validate($photos["images"], ["required", "starts_with:iVBORw0KGg,/9j/4"]);
+            Validator::validate($photos["images"], ["required", "starts_with:iVBORw0KGg,/9j/4"], ["Photo is required."]);
 
             $product = new Product(["name" => $name, "price" => (float) $price, "description" => $description, "category_id" => (int) $category, "subCategoryName" => $subCategory]);
             $product->save();
