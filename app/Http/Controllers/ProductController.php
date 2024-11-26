@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Category;
 use App\Models\Photo;
 use App\Models\Size;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Response;
 use Storage;
 
 class ProductController extends Controller
@@ -42,14 +44,13 @@ class ProductController extends Controller
             //Check from the b64 string whether the string starts with the characters that indicate that the uploaded file is a JPG or PNG
             Validator::validate($photos["images"], ["required", "starts_with:iVBORw0KGg,/9j/4"], ["Photo is required."]);
 
-            $product = new Product(["name" => $name, "price" => (float) $price, "description" => $description, "category_id" => (int) $category, "subCategoryName" => $subCategory]);
+            $product = new Product(["name" => $name, "price" => (float) $price, "description" => $description, "category_id" => (int) $category, "subcategory_name" => $subCategory]);
             $product->save();
 
             foreach ($sizes as $size) {
                 $retrievedSize = Size::where("name", $size)->first();
                 $product->sizes()->save($retrievedSize);
             }
-
 
             //Loop through the images, decode them and then make a Photo model that is associated with the created Product
             for ($i = 0; $i < count($photos["images"]); $i++) {
@@ -69,11 +70,49 @@ class ProductController extends Controller
                     return response()->json(["message" => $e->getMessage()], 500);
                 }
 
-
             }
         } else {
             return response()->json(["message" => "You're not authorized to perform this action."], 403);
         }
+
+    }
+
+    public function latestCollection(Request $request)
+    {
+
+        $productList = [];
+
+        $latest = Product::latest()->take(10)->get();
+
+        foreach ($latest as $product) {
+            $images = [];
+            $sizes = [];
+
+            $categoryName = Category::where("id", $product->category_id)->first()->categoryName;
+
+            $product->category_id = $categoryName;
+
+            foreach ($product->photos as $image) {
+                $file = Storage::get($image->photo_path);
+                array_push($images, base64_encode($file));
+            }
+
+            foreach ($product->sizes as $size) {
+                array_push($sizes, $size->name);
+            }
+            $product->sizeList = $sizes;
+            $product->images = $images;
+
+
+            array_push($productList, ["product" => $product]);
+        }
+
+        try {
+            return response()->json($productList, 200);
+        } catch (\Exception $e) {
+            return response()->json(["message" => $e->getMessage()], 500);
+        }
+
 
     }
 

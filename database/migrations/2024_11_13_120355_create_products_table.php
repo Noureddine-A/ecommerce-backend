@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->float('price');
             $table->integer("category_id");
             $table->text("description")->nullable();
-            $table->string("subcategoryName");
+            $table->string("subcategory_name");
             $table->timestamps();
         });
     }
