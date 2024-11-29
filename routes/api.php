@@ -14,7 +14,9 @@ Route::post("/user/logout", [UserController::class, "logout"])->middleware("auth
 
 // Product routes
 
-Route::post("/admin/add-product", [ProductController::class,"create"])->middleware("auth");
+Route::post("/admin/add-product", [ProductController::class, "create"])->middleware("auth");
 
-Route::get("/product/latest", [ProductController::class,"latestCollection"]);
+Route::get("/product/latest", [ProductController::class, "latestCollection"]);
+
+Route::get("/product/all", [ProductController::class, "getAllProducts"]);
 

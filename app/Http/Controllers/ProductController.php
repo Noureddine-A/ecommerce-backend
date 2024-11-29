@@ -79,15 +79,34 @@ class ProductController extends Controller
 
     public function latestCollection(Request $request)
     {
+        $products = ProductController::getProducts("latest");
 
+        return response()->json($products, 200);
+
+    }
+
+    public function getAllProducts(Request $request)
+    {
+
+        $products = ProductController::getProducts("all");
+
+        return response()->json($products, 200);
+    }
+
+    private function getProducts(string $route)
+    {
         $productList = [];
+        $products = [];
+        $sizes = [];
 
-        $latest = Product::latest()->take(10)->get();
+        if ($route == "latest") {
+            $products = Product::latest()->take(10)->get();
+        } else if ($route == "all") {
+            $products = Product::orderBy("id", "asc")->get();
+        }
 
-        foreach ($latest as $product) {
+        foreach ($products as $product) {
             $images = [];
-            $sizes = [];
-
             $categoryName = Category::where("id", $product->category_id)->first()->categoryName;
 
             $product->category_id = $categoryName;
@@ -107,13 +126,7 @@ class ProductController extends Controller
             array_push($productList, ["product" => $product]);
         }
 
-        try {
-            return response()->json($productList, 200);
-        } catch (\Exception $e) {
-            return response()->json(["message" => $e->getMessage()], 500);
-        }
-
-
+        return $productList;
     }
 
 
