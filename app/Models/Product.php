@@ -30,4 +30,9 @@ class Product extends Model
         return Attribute::make(set: fn(string $value) => ucfirst($value));
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class);
+    }
+
 }

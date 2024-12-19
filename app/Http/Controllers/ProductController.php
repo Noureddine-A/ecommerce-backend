@@ -97,7 +97,6 @@ class ProductController extends Controller
     {
         $productList = [];
         $products = [];
-        $sizes = [];
 
         if ($route == "latest") {
             $products = Product::latest()->take(10)->get();
@@ -107,6 +106,7 @@ class ProductController extends Controller
 
         foreach ($products as $product) {
             $images = [];
+            $sizes = [];
             $categoryName = Category::where("id", $product->category_id)->first()->categoryName;
 
             $product->category_id = $categoryName;

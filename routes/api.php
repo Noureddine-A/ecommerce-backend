@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -19,4 +20,8 @@ Route::post("/admin/add-product", [ProductController::class, "create"])->middlew
 Route::get("/product/latest", [ProductController::class, "latestCollection"]);
 
 Route::get("/product/all", [ProductController::class, "getAllProducts"]);
+
+Route::post("/order/create", [OrderController::class, "create"]);
+
+
 
