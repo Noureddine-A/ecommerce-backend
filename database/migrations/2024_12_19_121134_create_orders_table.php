@@ -20,6 +20,9 @@ return new class extends Migration {
             $table->string("zipcode")->nullable(false);
             $table->string("country")->nullable(false);
             $table->string("phone");
+            $table->string("firstName");
+            $table->string("lastName");
+            $table->string("email");
             $table->timestamps();
         });
     }
